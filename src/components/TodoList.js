@@ -42,16 +42,6 @@ function TodoList() {
 	};
 
 	const removeTodo = id => {
-		//const removeArr = [...todos].filter(todo => todo.id !== id)
-
-		//setTodos(removeArr);
-		//const {
-		//	id,
-		//} = todo;
-
-		//debugger
-		
-
 		axios.get(`http://localhost:4000/delete/todos/${id}`)
 		.then(result => {
 			console.log(result)
