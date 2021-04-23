@@ -18,12 +18,9 @@ function TodoList() {
 			return
 		}
 
-		// const newTodos = [todo, ...todos]
-		// setTodos(newTodos)
-		// console.log(todo, ...todos);
 		axios.post(`${URL_API}create/todos`, {
 			title,
-			status: true,
+			status: false,
 		})
 		.then(result => {
 			setTodos(result.data.result)
@@ -33,39 +30,20 @@ function TodoList() {
 		});
 	};
 
-	//const updateTodo = (todoId, newValue) => {
-	//	if(!newValue.text || /^\s*$/.test(newValue.text)) {
-	//		return;
-	//	}
-	const updateTodo = (todo, newValue ) => {
-		if(!newValue.text || /^\s*$/.test(newValue.text)) {
-			return;
-			console.log(newValue)
-		}
+	const updateTodo = (id, newValue ) => {
 		const {
 			title,
-			status,
-			id
-		} = newValue
+		} = newValue;
 
-		axios.post('http://update/todos',{
-			newValue,
-			//status: true,
-		})
-		
-		.then(result => {
-			setTodos(result.data.result)
-		})
-		.catch((err) => {
-			console.log(err)
+		if(!title || /^\s*$/.test(title)) {
+			return;
+		}
+
+		axios.post(`${URL_API}update/todos`,{
+			title,
+			id,
 		});
 	};
-
-
-
-		//setTodos(prev => prev.map(item => (item.id === todoId ? newValue : item))
-		//);
-
 
 	const removeTodo = id => {
 		axios.get(`${URL_API}delete/todos/${id}`)
@@ -77,16 +55,12 @@ function TodoList() {
 		});
 	}
 
-	const completeTodo = id => {
-		let updatedTodos = todos.map(todo => {
-			if (todo.id === id) {
-				todo.isComplete = !todo.isComplete
-			}
-			return todo 
+	const completeTodo = id => (
+		axios.post(`${URL_API}update/todos/status`, {
+			status: true,
+			id,
 		})
-		setTodos(updatedTodos);
-
-	}
+	);
 
 	useEffect(() => {
 		axios.get(`${URL_API}read/todos`)
@@ -104,8 +78,8 @@ function TodoList() {
 			<TodoForm onSubmit={addTodo} />
 			<Todo 
 				todos={todos} 
-				completeTodo = {completeTodo}
-				removeTodo = {removeTodo}
+				completeTodo={completeTodo}
+				removeTodo={removeTodo}
 				updateTodo={updateTodo}
 			/>
 		</div>
