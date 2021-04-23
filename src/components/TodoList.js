@@ -89,7 +89,7 @@ function TodoList() {
 	}
 
 	useEffect(() => {
-		axios.get(`${URL_API}/read/todos`)
+		axios.get(`${URL_API}read/todos`)
 		.then(result => {
 			setTodos(result.data.result)
 		})
