@@ -4,6 +4,8 @@ import axios from 'axios';
 import TodoForm from './TodoForm';
 import Todo from './Todo';
 
+const URL_API = 'https://api-todo-woodward.herokuapp.com/';
+
 function TodoList() {
 	const [todos, setTodos] = useState([]);
 
@@ -19,8 +21,7 @@ function TodoList() {
 		// const newTodos = [todo, ...todos]
 		// setTodos(newTodos)
 		// console.log(todo, ...todos);
-
-		axios.post('http://localhost:4000/create/todos', {
+		axios.post(`${URL_API}create/todos`, {
 			title,
 			status: true,
 		})
@@ -32,17 +33,42 @@ function TodoList() {
 		});
 	};
 
-	const updateTodo = (todoId, newValue) => {
+	//const updateTodo = (todoId, newValue) => {
+	//	if(!newValue.text || /^\s*$/.test(newValue.text)) {
+	//		return;
+	//	}
+	const updateTodo = (todo, newValue ) => {
 		if(!newValue.text || /^\s*$/.test(newValue.text)) {
 			return;
+			console.log(newValue)
 		}
+		const {
+			title,
+			status,
+			id
+		} = newValue
 
-		setTodos(prev => prev.map(item => (item.id === todoId ? newValue : item))
-		);
+		axios.post('http://update/todos',{
+			newValue,
+			//status: true,
+		})
+		
+		.then(result => {
+			setTodos(result.data.result)
+		})
+		.catch((err) => {
+			console.log(err)
+		});
 	};
 
+
+
+		//setTodos(prev => prev.map(item => (item.id === todoId ? newValue : item))
+		//);
+
+
 	const removeTodo = id => {
-		axios.get(`http://localhost:4000/delete/todos/${id}`)
+		axios.get(`${URL_API}delete/todos/${id}`)
 		.then(result => {
 			console.log(result)
 		})
@@ -63,7 +89,7 @@ function TodoList() {
 	}
 
 	useEffect(() => {
-		axios.get('http://localhost:4000/read/todos')
+		axios.get(`${URL_API}/read/todos`)
 		.then(result => {
 			setTodos(result.data.result)
 		})
